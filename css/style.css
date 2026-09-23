@@ -1,0 +1,369 @@
+/* ==========================================================================
+   BUGANI — Design system
+   Preto / Dourado / Cinza-claro — identidade já definida no briefing.
+   ========================================================================== */
+
+:root {
+  --black: #000000;
+  --gold: #F2CB05;
+  --gold-dark: #D6B300;
+  --bg-light: #EAEAEA;
+  --bg-lighter: #F4F4F4;
+  --bg-mid: #D6D6D6;
+  --white: #FFFFFF;
+  --ink: #101010;
+  --ink-soft: #3A3A3A;
+  --border: #CFCFCF;
+
+  --font-display: "Poppins", "Helvetica Neue", Arial, sans-serif;
+  --font-body: "Poppins", "Helvetica Neue", Arial, sans-serif;
+
+  --nav-h: 72px;
+  --container: 1180px;
+  --radius: 14px;
+
+  --ease: cubic-bezier(.4, 0, .2, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  color: var(--ink);
+  background: var(--white);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; cursor: pointer; }
+h1, h2, h3, h4 { margin: 0; font-family: var(--font-display); font-weight: 600; line-height: 1.15; letter-spacing: -0.01em; }
+p { margin: 0; line-height: 1.6; }
+.container { max-width: var(--container); margin: 0 auto; padding: 0 32px; }
+.container--narrow { max-width: 900px; }
+@media (max-width: 420px) { .container { padding: 0 20px; } }
+
+/* Skip link */
+.skip-link {
+  position: absolute; left: -999px; top: 0; z-index: 200;
+  background: var(--gold); color: var(--black); padding: 12px 20px; font-weight: 700;
+}
+.skip-link:focus { left: 16px; top: 16px; }
+
+:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+
+/* ---------- Nav ---------- */
+.nav {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--black);
+  height: var(--nav-h);
+  display: flex; align-items: center;
+}
+.nav .container { display: flex; align-items: center; justify-content: space-between; width: 100%; }
+.nav-logo { display: flex; align-items: center; gap: 10px; color: var(--white); }
+.nav-logo__img { height: 30px; width: auto; display: block; }
+.nav-logo .word { font-family: var(--font-display); font-size: 22px; letter-spacing: -0.02em; }
+.nav-logo .tag { font-size: 11px; line-height: 1.15; color: #C9C9C9; font-weight: 400; }
+.nav-links { display: flex; gap: 32px; list-style: none; margin: 0; padding: 0; }
+.nav-links a {
+  color: #B9B9B9; font-size: 13px; font-weight: 600; letter-spacing: 0.03em; text-transform: uppercase;
+  padding: 6px 2px; border-bottom: 2px solid transparent; transition: color .2s var(--ease), border-color .2s var(--ease);
+}
+.nav-links a:hover, .nav-links a:focus-visible { color: var(--white); }
+.nav-links a[aria-current="page"] { color: var(--gold); border-bottom-color: var(--gold); }
+.nav-toggle { display: none; }
+
+@media (max-width: 860px) {
+  .nav-links {
+    position: fixed; inset: var(--nav-h) 0 0 0; background: var(--black);
+    flex-direction: column; gap: 0; padding: 8px 32px 32px;
+    transform: translateY(-8px); opacity: 0; pointer-events: none;
+    transition: opacity .2s var(--ease), transform .2s var(--ease);
+  }
+  .nav-links.is-open { opacity: 1; transform: translateY(0); pointer-events: auto; }
+  .nav-links li { border-bottom: 1px solid #222; }
+  .nav-links a { display: block; padding: 16px 0; }
+  .nav-toggle {
+    display: flex; flex-direction: column; gap: 5px; background: none; border: 0; padding: 12px;
+  }
+  .nav-toggle span { width: 24px; height: 2px; background: var(--white); }
+}
+
+/* ---------- Video block (hero / banner) ---------- */
+.video-block { position: relative; background: var(--bg-mid); overflow: hidden; }
+/* O JS cria o <iframe> já com a classe video-block__media diretamente nele
+   (não dentro de uma div wrapper) — por isso o seletor é direto. Isso
+   garante que pointer-events:none e o tamanho calculado sejam aplicados
+   no elemento certo (evita hover mostrando controles do YouTube). */
+.video-block__media {
+  position: absolute; top: 50%; left: 50%; border: 0; pointer-events: none;
+  transform: translate(-50%, -50%);
+  width: 100vw; height: 56.25vw;       /* 16:9 a partir da largura da tela */
+  min-width: 177.78vh; min-height: 100vh; /* 16:9 a partir da altura da tela */
+}
+@supports (width: 100cqw) {
+  .video-block { container-type: size; }
+  .video-block__media {
+    width: 100cqw; height: 56.25cqw;
+    min-width: 177.78cqh; min-height: 100cqh;
+  }
+}
+.video-block__scrim { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,.15), rgba(0,0,0,.35)); }
+.video-block__placeholder {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  color: #8b8b8b; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; text-align: center; padding: 24px;
+}
+
+/* Home: stacked hero sections */
+.hero-section {
+  /* Cresce com a largura da tela (até um teto) pra telas grandes mostrarem
+     mais do enquadramento original do vídeo, sem cortar tanto em cima/baixo. */
+  min-height: clamp(420px, 42vw, 640px);
+  display: flex; align-items: center;
+}
+.hero-section .container { position: relative; z-index: 2; width: 100%; }
+.hero-section__copy { max-width: 640px; }
+.hero-section__title {
+  display: inline; font-size: clamp(22px, 3.4vw, 34px); color: var(--white);
+  background: var(--black); padding: 6px 14px; box-decoration-break: clone; -webkit-box-decoration-break: clone;
+  line-height: 1.5;
+}
+.hero-section__cta {
+  margin-top: 18px; display: inline-block; background: var(--gold); color: var(--black);
+  font-weight: 800; font-size: 14px; padding: 10px 20px; letter-spacing: .02em;
+  transition: background .2s var(--ease), transform .2s var(--ease);
+}
+.hero-section__cta:hover { background: var(--gold-dark); transform: translateY(-1px); }
+
+.hero-dots {
+  position: absolute; right: 32px; top: 50%; transform: translateY(-50%);
+  display: flex; flex-direction: column; gap: 10px; z-index: 3;
+}
+.hero-dots a {
+  width: 9px; height: 9px; border-radius: 50%; background: rgba(255,255,255,.55); border: 0; display: block;
+  transition: background .2s var(--ease), transform .2s var(--ease);
+}
+.hero-dots a[aria-current="true"], .hero-dots a:hover { background: var(--black); transform: scale(1.15); }
+@media (max-width: 640px) { .hero-dots { display: none; } }
+
+/* Inner page banner */
+.page-banner { position: relative; overflow: hidden; background: var(--bg-mid); min-height: clamp(260px, 28vw, 420px); display: flex; align-items: flex-end; padding-bottom: 40px; }
+.page-banner__bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.page-banner .container { position: relative; z-index: 2; text-align: center; }
+.page-banner__label {
+  display: inline-block; background: var(--gold); color: var(--black);
+  font-family: var(--font-display); font-weight: 600; font-size: clamp(26px, 4vw, 40px); padding: 6px 18px;
+}
+
+/* ---------- Section blocks ---------- */
+.section { padding: 72px 0; }
+.section--tight { padding: 48px 0; }
+.section--muted { background: var(--bg-lighter); }
+.section-heading {
+  display: inline-block; background: var(--black); color: var(--white);
+  font-size: 20px; padding: 8px 16px; margin-bottom: 20px;
+}
+
+/* ---------- Títulos leves de conteúdo (sem a caixa preta pesada) ---------- */
+.section-kicker {
+  display: block; font-size: 12px; font-weight: 700; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--gold-dark); margin-bottom: 8px;
+}
+.content-heading {
+  font-family: var(--font-body); font-weight: 700; font-size: clamp(20px, 2.4vw, 26px);
+  color: var(--ink); margin: 0 0 14px; letter-spacing: -0.01em;
+}
+.section-intro { max-width: 660px; margin: 0 auto; text-align: center; }
+.section-intro p:first-child { font-size: 17px; color: var(--ink); }
+.section-intro p { font-size: 15.5px; color: var(--ink-soft); }
+.section-intro p + p { margin-top: 14px; }
+.mission-block { text-align: center; }
+.mission-block .content-heading, .mission-block .section-kicker { display: block; }
+
+/* ---------- Equipe: foto + nome (sem vídeo) ---------- */
+.team-card { text-align: center; }
+.team-card__photo {
+  aspect-ratio: 4/5; border-radius: var(--radius); overflow: hidden; background: var(--bg-mid);
+}
+.team-card__photo img { width: 100%; height: 100%; object-fit: cover; }
+.team-card__name { margin-top: 14px; font-family: var(--font-body); font-weight: 700; font-size: 15px; color: var(--ink); }
+.team-card__role { font-size: 13px; color: var(--ink-soft); margin-top: 2px; }
+
+/* ---------- Atuação: cards com ícone (mais leves que os blocos coloridos) ---------- */
+.service-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 32px; }
+@media (max-width: 760px) { .service-grid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 480px) { .service-grid { grid-template-columns: 1fr; } }
+.service-card {
+  padding: 26px 22px; border-radius: 14px; background: var(--white); border: 1px solid var(--border);
+  min-height: 150px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 16px;
+  transition: border-color .2s var(--ease), transform .2s var(--ease);
+}
+.service-card:hover { border-color: var(--gold); transform: translateY(-2px); }
+.service-card__icon {
+  width: 42px; height: 42px; border-radius: 10px; background: var(--black);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.service-card__icon svg { width: 20px; height: 20px; stroke: var(--gold); color: var(--gold); fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.service-card__text { font-family: var(--font-body); font-weight: 600; font-size: 15px; line-height: 1.4; color: var(--ink); }
+
+/* ---------- Clientes: slots de logo (imagem estática) ---------- */
+.client-logo-slot {
+  aspect-ratio: 3/2; border-radius: var(--radius); overflow: hidden;
+  background: var(--white); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center; padding: 18%;
+}
+.client-logo-slot img { width: 100%; height: 100%; object-fit: contain; }
+
+/* ---------- Portfólio: capa estática (sem vídeo no grid) ---------- */
+.project-cover { position: relative; border-radius: var(--radius); overflow: hidden; aspect-ratio: 16/10; display: block; }
+.project-cover img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s var(--ease); }
+.project-cover:hover img { transform: scale(1.05); }
+.project-cover__caption {
+  position: absolute; left: 0; right: 0; bottom: 0; padding: 14px 16px;
+  background: linear-gradient(0deg, rgba(0,0,0,.75), transparent);
+  color: var(--white); font-size: 13px; font-weight: 700; letter-spacing: .01em; text-align: center;
+}
+
+/* ---------- Card grids (equipe / clientes / portfólio) ---------- */
+.card-grid { display: grid; gap: 20px; margin-top: 32px; }
+.card-grid--4 { grid-template-columns: repeat(4, 1fr); }
+.card-grid--5 { grid-template-columns: repeat(5, 1fr); }
+.card-grid--3 { grid-template-columns: repeat(3, 1fr); }
+@media (max-width: 960px) { .card-grid--4, .card-grid--5 { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 640px) { .card-grid--4, .card-grid--5, .card-grid--3 { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 420px) { .card-grid--4, .card-grid--3 { grid-template-columns: 1fr; } }
+
+.media-card {
+  position: relative; border-radius: var(--radius); overflow: hidden; aspect-ratio: 4/5;
+  background: var(--white); border: 1px solid var(--border);
+  cursor: pointer; container-type: size;
+}
+.media-card--wide { aspect-ratio: 16/10; }
+.media-card--logo { aspect-ratio: 3/2; background: var(--white); }
+.media-card:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+.media-card__thumb { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; background: var(--bg-mid); }
+.media-card--logo .media-card__thumb { object-fit: contain; padding: 22%; }
+.media-card__frame {
+  position: absolute; top: 50%; left: 50%; border: 0; pointer-events: none;
+  transform: translate(-50%, -50%); opacity: 0; transition: opacity .25s var(--ease);
+  width: 100%; height: 100%;
+}
+@supports (width: 100cqw) {
+  .media-card__frame { width: 100cqw; height: 56.25cqw; min-width: 177.78cqh; min-height: 100cqh; }
+}
+.media-card__frame.is-active { opacity: 1; pointer-events: auto; }
+.media-card__play {
+  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  width: 46px; height: 46px; border-radius: 50%; background: rgba(0,0,0,.72);
+  display: flex; align-items: center; justify-content: center; transition: background .2s var(--ease), transform .2s var(--ease);
+  pointer-events: none;
+}
+.media-card:hover .media-card__play, .media-card:focus-visible .media-card__play { background: var(--gold); }
+.media-card:hover .media-card__play svg path, .media-card:focus-visible .media-card__play svg path { fill: var(--black); }
+.media-card.is-playing .media-card__play { opacity: 0; }
+.media-card__play svg { width: 15px; height: 15px; margin-left: 2px; }
+.media-card__caption {
+  position: absolute; left: 0; right: 0; bottom: 0; padding: 10px 12px;
+  background: linear-gradient(0deg, rgba(0,0,0,.72), transparent);
+  color: var(--white); font-size: 13px; font-weight: 700; letter-spacing: .01em;
+}
+
+/* Carousel controls (clientes / portfólio) */
+.carousel-controls { display: flex; justify-content: center; gap: 10px; margin-top: 32px; }
+.carousel-controls button {
+  width: 40px; height: 40px; background: var(--gold); border: 0; border-radius: 6px;
+  display: flex; align-items: center; justify-content: center; transition: background .2s var(--ease);
+}
+.carousel-controls button:hover { background: var(--gold-dark); }
+.carousel-controls button:disabled { background: var(--border); cursor: not-allowed; }
+.carousel-controls svg { width: 16px; height: 16px; }
+.carousel-track { overflow: hidden; }
+.carousel-track .card-grid { transition: transform .4s var(--ease); }
+
+/* ---------- Sobre / equipe text blocks ---------- */
+.mission-block { margin-top: 48px; max-width: 720px; }
+
+/* ---------- Contato ---------- */
+.contact {
+  display: grid; grid-template-columns: 1fr 1.4fr; gap: 48px; align-items: start;
+}
+@media (max-width: 760px) { .contact { grid-template-columns: 1fr; } }
+.contact__title {
+  font-size: clamp(28px, 4vw, 40px); color: var(--white); background: var(--black);
+  padding: 4px 14px; display: inline; box-decoration-break: clone; -webkit-box-decoration-break: clone; line-height: 1.4;
+}
+.contact__cta {
+  margin-top: 16px; display: inline-block; background: var(--gold); color: var(--black);
+  font-weight: 800; font-size: 14px; padding: 8px 18px;
+}
+.contact-form { display: flex; flex-direction: column; gap: 14px; }
+.contact-form input, .contact-form textarea {
+  width: 100%; border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px;
+  font-family: var(--font-body); font-size: 14px; background: var(--white); color: var(--ink);
+  transition: border-color .2s var(--ease);
+}
+.contact-form input:focus, .contact-form textarea:focus { border-color: var(--black); }
+.contact-form textarea { min-height: 120px; resize: vertical; }
+.contact-form button {
+  align-self: flex-start; background: var(--black); color: var(--white); font-weight: 700;
+  padding: 12px 28px; border-radius: 10px; border: 0; transition: background .2s var(--ease);
+}
+.contact-form button:hover { background: #222; }
+.form-note { font-size: 12px; color: var(--ink-soft); margin-top: -2px; }
+.form-status { font-size: 13px; margin-top: 4px; min-height: 18px; }
+.form-status[data-state="ok"] { color: #1a7a34; }
+.form-status[data-state="error"] { color: #b3261e; }
+
+/* ---------- Footer ---------- */
+.footer { background: var(--gold); padding: 32px 0; }
+.footer .container { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px; }
+.footer-address { font-size: 13px; color: rgba(0,0,0,.75); text-align: center; flex: 1 1 auto; margin: 0; }
+.footer-social { display: flex; gap: 12px; }
+.footer-social a {
+  width: 36px; height: 36px; background: var(--black); border-radius: 8px;
+  display: flex; align-items: center; justify-content: center; transition: transform .2s var(--ease);
+}
+.footer-social a:hover { transform: translateY(-2px); }
+.text-link {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--font-body); font-weight: 600; font-size: 14px; color: var(--ink);
+  border-bottom: 1px solid var(--ink); padding-bottom: 2px;
+  transition: color .2s var(--ease), border-color .2s var(--ease), gap .2s var(--ease);
+}
+.text-link:hover { color: var(--gold-dark); border-color: var(--gold-dark); gap: 10px; }
+.footer-social svg path { fill: var(--gold); }
+.footer-logo { display: flex; align-items: center; gap: 10px; }
+.footer-logo .word { font-family: var(--font-display); font-weight: 600; font-size: 22px; }
+.footer-logo .tag { font-size: 11px; line-height: 1.15; }
+
+/* ---------- Portfolio detail ---------- */
+.project-client { font-family: var(--font-body); font-weight: 700; color: var(--gold-dark); font-size: 15px; margin: -8px 0 0; }
+.project-meta { display: flex; gap: 10px; flex-wrap: wrap; margin: 18px 0 0; justify-content: center; }
+.project-meta span {
+  font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em;
+  background: var(--bg-mid); padding: 6px 12px; border-radius: 20px;
+}
+
+/* Galeria de slides do case: uma coluna, tamanho de leitura confortável */
+.case-gallery { display: flex; flex-direction: column; gap: 28px; max-width: 880px; margin: 0 auto; }
+.case-slide { margin: 0; }
+.case-slide img {
+  width: 100%; border-radius: var(--radius); border: 1px solid var(--border); display: block;
+}
+.case-slide figcaption { margin-top: 10px; font-size: 13px; color: var(--ink-soft); text-align: center; }
+
+/* PDF do case, incorporado direto na página */
+.case-pdf { width: 100%; height: 82vh; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); background: var(--bg-lighter); }
+.case-pdf iframe { width: 100%; height: 100%; border: 0; }
+.case-pdf-link { text-align: center; margin-top: 18px; }
+
+/* Utility */
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+}
